@@ -1,0 +1,7 @@
+"INITIALIZING THE RECEIVER" (and "initial_settings")
+
+"Probe Data"
+
+"Processing"
+	-If cold start, "Initial_acquisition"...... else "tracking"
+	-If "Initial_acquisition", reference code downsampled using "Code_Generator"

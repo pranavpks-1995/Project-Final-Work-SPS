@@ -8,7 +8,5 @@ lastPhase=arg(end); % supply the last phase
 % Generate Sin and Cos carriers
 sincarr = (sin(arg));
 coscarr = (cos(arg));
-
-
 end
 
