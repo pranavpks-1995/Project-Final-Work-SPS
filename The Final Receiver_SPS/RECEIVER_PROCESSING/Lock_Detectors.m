@@ -18,7 +18,7 @@ if rem(loopcnt,20)==0    % lock is checked after every 20 msec
             Z=mean(I_P_array.^2+Q_P_array.^2);
             N=var(I_P_array.^2+Q_P_array.^2);
             % Apply VSM algo for CNR estimation
-            NA=sqrt(Z^2-N);
+            NA=sqrt(Z^2-N); 
             est_CNR_VSM=10*log10(NA/(Z-NA)/1e-3)
             trackResults(channelNr).EST_CNR(loopcnt)=est_CNR_VSM;
 %% Sign Reversal Criterion
@@ -43,37 +43,39 @@ if (((sign_changes_I<15) && (sign_changes_Q<15)) || (real(est_CNR_VSM)<30) || (i
 
 % lock may be lost if the satellite has gone out of view
 % this is checked below and acq status is updated accordingly
-if (((real(est_CNR_VSM)<30) || (imag(est_CNR_VSM)>0)) && (loopcnt>60)) % check if SNR is low
+    if (((real(est_CNR_VSM)<30) || (imag(est_CNR_VSM)>0)) && (loopcnt>60)) % check if SNR is low
 
-% See if SNR is decreasing gradually    
-CNR_diff1=(abs(trackResults(channelNr).EST_CNR(loopcnt))-abs(trackResults(channelNr).EST_CNR(loopcnt-20)));
-CNR_diff2=(abs(trackResults(channelNr).EST_CNR(loopcnt-20))-abs(trackResults(channelNr).EST_CNR(loopcnt-40)));
-if abs(CNR_diff1-CNR_diff2) < 2     %%% lock is lost because satellite has gone away, means no need to try again
-trackResults(channelNr).AcqSkip(loopcnt+1)=3; % Acq status is updated according to that
-trackResults(channelNr).LockCheck(loopcnt)=0;
-else % as SNR is very low - Satellite was not present,it was a false alarm  
-trackResults(channelNr).AcqSkip(loopcnt+1)=3;
-trackResults(channelNr).LockCheck(loopcnt)=0;
-end
+        % See if SNR is decreasing gradually    
+        CNR_diff1=(abs(trackResults(channelNr).EST_CNR(loopcnt))-abs(trackResults(channelNr).EST_CNR(loopcnt-20)));
+        CNR_diff2=(abs(trackResults(channelNr).EST_CNR(loopcnt-20))-abs(trackResults(channelNr).EST_CNR(loopcnt-40)));
+        if abs(CNR_diff1-CNR_diff2) < 2     %%% lock is lost because satellite has gone away, means no need to try again
+        trackResults(channelNr).AcqSkip(loopcnt+1)=3; % Acq status is updated according to that
+        trackResults(channelNr).LockCheck(loopcnt)=0;
+        else % as SNR is very low - Satellite was not present,it was a false alarm  
+        trackResults(channelNr).AcqSkip(loopcnt+1)=3;
+        trackResults(channelNr).LockCheck(loopcnt)=0;
+    end
 
-elseif ((((sign_changes_I<15) && (sign_changes_Q<15)) || (real(est_CNR_VSM)<30) || (imag(est_CNR_VSM)>0))...
-         && loopcnt==20) % SNR is high, lock is lost for the first time due to gliches, give it a warm start
-trackResults(channelNr).AcqSkip(loopcnt+2)=0; % in the next to next loopcnt as next ms may have a transition
-trackResults(channelNr).LockCheck(loopcnt)=0;
- 
-else % SNR is high, lock is lost due to gliches, give it a hot start
-trackResults(channelNr).AcqSkip(loopcnt+1)=2;
-trackResults(channelNr).LockCheck(loopcnt)=0;
-end
-trackResults(channelNr).Data(loopcnt)    = 0;
-else % Lock is not lost, pass on previous acq status
-trackResults(channelNr).LockCheck(loopcnt)=trackResults(channelNr).LockCheck(loopcnt-1)+1;
-trackResults(channelNr).AcqSkip(loopcnt+1)=trackResults(channelNr).AcqSkip(loopcnt);
-end
-                
+    elseif ((((sign_changes_I<15) && (sign_changes_Q<15)) || (real(est_CNR_VSM)<30) || (imag(est_CNR_VSM)>0))...
+             && loopcnt==20) % SNR is high, lock is lost for the first time due to gliches, give it a warm start
+        trackResults(channelNr).AcqSkip(loopcnt+2)=0; % in the next to next loopcnt as next ms may have a transition
+        trackResults(channelNr).LockCheck(loopcnt)=0;
+     
+    else % SNR is high, lock is lost due to gliches, give it a hot start
+    trackResults(channelNr).AcqSkip(loopcnt+1)=2;
+    trackResults(channelNr).LockCheck(loopcnt)=0;
+    end
+
+    trackResults(channelNr).Data(loopcnt)    = 0;
+    
+    else % Lock is not lost, pass on previous acq status
+    trackResults(channelNr).LockCheck(loopcnt)=trackResults(channelNr).LockCheck(loopcnt-1)+1;
+    trackResults(channelNr).AcqSkip(loopcnt+1)=trackResults(channelNr).AcqSkip(loopcnt);
+    end
+                    
 else % wait for 20 values to accumulate, pass on previous values for lock strength and status
-trackResults(channelNr).LockCheck(loopcnt)=trackResults(channelNr).LockCheck(loopcnt-1);
-trackResults(channelNr).AcqSkip(loopcnt+1)=trackResults(channelNr).AcqSkip(loopcnt);
+    trackResults(channelNr).LockCheck(loopcnt)=trackResults(channelNr).LockCheck(loopcnt-1);
+    trackResults(channelNr).AcqSkip(loopcnt+1)=trackResults(channelNr).AcqSkip(loopcnt);
 end
 
 %% Delta-PseudoRange Calculation
@@ -91,7 +93,7 @@ end
 trackResults(channelNr).DPrange(loopcnt)=rem(loopcnt,20)+...
     trackResults(channelNr).filtcodephase(loopcnt)/samples_per_code;
 
-
+  
 
 else    
 trackResults(channelNr).DPrange(loopcnt) = trackResults(channelNr).DPrange(loopcnt-1);

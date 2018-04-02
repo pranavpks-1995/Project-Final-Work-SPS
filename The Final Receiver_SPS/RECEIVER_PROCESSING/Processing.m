@@ -20,7 +20,7 @@ trackResults.filtfreqdev  = zeros(1, settings.msToProcess/settings.IntegrationTi
 trackResults.phi          = zeros(1, settings.msToProcess/settings.IntegrationTime); % Accumulated Phase for NCO
 trackResults.DopplerFreq  = zeros(1, settings.msToProcess/settings.IntegrationTime); % Current Doppler
 trackResults.carrFreq     = ones(1, settings.msToProcess/settings.IntegrationTime)* settings.IF; % Current Carrier
-%% Code Tracking Loop Parameters
+%% Code Tracking Loop Parameters`
 
 % Rate at which chips of the C/A code are generated:not constant, can change due to code doppler
 trackResults.codeFreq      = ones(1, settings.msToProcess/settings.IntegrationTime)* settings.codeFreqBasis;
