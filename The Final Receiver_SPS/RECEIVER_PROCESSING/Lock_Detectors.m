@@ -68,10 +68,10 @@ if (((sign_changes_I<15) && (sign_changes_Q<15)) || (real(est_CNR_VSM)<30) || (i
 
     trackResults(channelNr).Data(loopcnt)    = 0;
     
-    else % Lock is not lost, pass on previous acq status
+else % Lock is not lost, pass on previous acq status
     trackResults(channelNr).LockCheck(loopcnt)=trackResults(channelNr).LockCheck(loopcnt-1)+1;
     trackResults(channelNr).AcqSkip(loopcnt+1)=trackResults(channelNr).AcqSkip(loopcnt);
-    end
+end
                     
 else % wait for 20 values to accumulate, pass on previous values for lock strength and status
     trackResults(channelNr).LockCheck(loopcnt)=trackResults(channelNr).LockCheck(loopcnt-1);
@@ -85,18 +85,18 @@ end
 if (trackResults(channelNr).LockCheck(loopcnt)>5 && ...
 sign(trackResults(channelNr).Q_P(loopcnt-1)*trackResults(channelNr).Q_P(loopcnt))==-1)
 
-if trackResults(channelNr).Data_boundary == 0
-trackResults(channelNr).Data_boundary = (loopcnt);
-end
+    if trackResults(channelNr).Data_boundary == 0
+    trackResults(channelNr).Data_boundary = (loopcnt);
+    end
 
 
-trackResults(channelNr).DPrange(loopcnt)=rem(loopcnt,20)+...
-    trackResults(channelNr).filtcodephase(loopcnt)/samples_per_code;
+    trackResults(channelNr).DPrange(loopcnt)=rem(loopcnt,20)+...
+        trackResults(channelNr).filtcodephase(loopcnt)/samples_per_code;
 
-  
+      
 
-else    
-trackResults(channelNr).DPrange(loopcnt) = trackResults(channelNr).DPrange(loopcnt-1);
+    else    
+    trackResults(channelNr).DPrange(loopcnt) = trackResults(channelNr).DPrange(loopcnt-1);
 
 end
 
@@ -104,8 +104,8 @@ end
 if (trackResults(channelNr).Data_boundary > 0 && rem((loopcnt)-trackResults(channelNr).Data_boundary,20)==0 && ...
         trackResults(channelNr).LockCheck(loopcnt)>1) % Select bit boundaries
 
-bit=... % fill in the value of current bit
-sign(sum(trackResults(channelNr).Q_P(loopcnt-20:loopcnt-1)));
-trackResults(channelNr).Data(loopcnt-20:loopcnt-1)=bit;
+    bit=... % fill in the value of current bit
+    sign(sum(trackResults(channelNr).Q_P(loopcnt-20:loopcnt-1)));
+    trackResults(channelNr).Data(loopcnt-20:loopcnt-1)=bit;
 
 end
